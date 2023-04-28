@@ -417,7 +417,7 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     send = (json: Object): ?LivePromise => {
-        console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
+        // console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const reqId = getUniqueId();
         return this.sendRaw({
             req_id: reqId,
@@ -427,7 +427,7 @@ export default class LiveApi {
 
     // TODO: should we deprecate this? preserve for backward compatibility
     sendRaw = (json: Object): ?LivePromise => {
-        console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
+        // console.warn('This method is deprecated, use high-level methods'); // eslint-disable-line
         const socketSend = () => {
             this.sendSpy(JSON.stringify(json));
             this.socket.send(JSON.stringify(json));
