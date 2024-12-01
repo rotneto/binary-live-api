@@ -99,14 +99,16 @@ export default class LiveApi {
         Object.keys(this.unresolvedPromises).forEach(reqId => {
             const disconnectedError = new Error('Websocket disconnected before response received.');
             disconnectedError.name = 'DisconnectError';
-            this.unresolvedPromises[reqId].reject(disconnectedError);
+            //this.unresolvedPromises[reqId].reject(disconnectedError);
             delete this.unresolvedPromises[reqId];
         });
 
         try {
             this.socket = connection || new WebSocket(urlPlusParams);
         } catch (err) {
-            // swallow connection error, we can't do anything about it
+            /*console.error('WebSocket connection failed:', err);
+            this.retryConnection();
+            return;*/
         } finally {
             this.socket.onopen = this.onOpen;
             this.socket.onclose = () => this.connect();
@@ -114,7 +116,24 @@ export default class LiveApi {
         }
     }
 
+    retryConnection(attempt = 1): void {
+        const maxAttempts = 10;
+        const delay = Math.min(1000 * 2 ** attempt, 30000); // Máximo de 30 segundos
+
+        if (attempt > maxAttempts) {
+            console.error('Max reconnection attempts reached. Unable to reconnect.');
+            return;
+        }
+
+        setTimeout(() => {
+            console.log(`Reconnection attempt #${attempt}...`);
+            this.connect();
+            this.retryConnection(attempt + 1); // Próxima tentativa
+        }, delay);
+    }
+
     onOpen = (): void => {
+        //console.log('WebSocket connected.');
         this.resubscribe();
         this.executeBufferedExecutes();
     };
