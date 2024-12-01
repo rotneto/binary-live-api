@@ -99,16 +99,16 @@ export default class LiveApi {
         Object.keys(this.unresolvedPromises).forEach(reqId => {
             const disconnectedError = new Error('Websocket disconnected before response received.');
             disconnectedError.name = 'DisconnectError';
-            //this.unresolvedPromises[reqId].reject(disconnectedError);
+            // this.unresolvedPromises[reqId].reject(disconnectedError);
             delete this.unresolvedPromises[reqId];
         });
 
         try {
             this.socket = connection || new WebSocket(urlPlusParams);
         } catch (err) {
-            /*console.error('WebSocket connection failed:', err);
+            /* console.error('WebSocket connection failed:', err);
             this.retryConnection();
-            return;*/
+            return; */
         } finally {
             this.socket.onopen = this.onOpen;
             this.socket.onclose = () => this.connect();
@@ -133,7 +133,7 @@ export default class LiveApi {
     }
 
     onOpen = (): void => {
-        //console.log('WebSocket connected.');
+        // console.log('WebSocket connected.');
         this.resubscribe();
         this.executeBufferedExecutes();
     };
